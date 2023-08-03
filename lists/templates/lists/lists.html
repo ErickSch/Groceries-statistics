@@ -1,0 +1,150 @@
+<!-- https://www.bootdey.com/snippets/view/Event-Schedule-list#preview -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+    <div class="container mt-4">
+
+
+        <div class="row justify-content-between">
+
+            <div class="col-md-5 mx-2 mb-3 rounded py-3 px-2" style="background-color: rgb(242, 173, 99);">
+                <h4>New list</h4>
+                <div class="container rounded py-2" style="background-color:coral">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ list_form.as_p }}
+                        <input type="submit" class="btn btn-primary" name="create_list_btn">
+                    </form>
+                    <!-- <form action="" method="POST">
+                        <label >Store: </label>
+                        {% csrf_token %}
+                        <input class="form-control" type="text"  value="{{ store }}">
+                        <label >Total: </label>
+                        <input class="form-control" type="number"  value="{{ total }}">
+                        <input type="submit">
+
+                    </form> -->
+                </div>
+            </div>
+            <span class="col-md-5" id="toggle-btn">
+                <button class="btn btn-info">Create Store</button>
+            </span>
+            <div class="col-md-5 mx-2 mb-3 bg-danger rounded py-3 px-2" id="toggle" style="display:none">
+                <h4>New store <a href="{% url 'edit_stores' %}" class="btn btn-warning align-content-end">Edit stores</a></h4>
+                <div class="container bg-light rounded border py-2">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ store_form.as_p }}
+                        <input type="submit" class="btn btn-primary" name="create_store_btn">
+                    </form>
+    
+                </div>
+                
+            </div>
+        </div>
+
+
+                
+        <table class="table table-dark table-striped table-hover">
+            <thead>
+                <tr class="text-white">
+                    <th class="text-center" scope="col">Date</th>
+                    <th  scope="col">Image</th>
+                    <th  scope="col">Store</th>
+                    <th  scope="col">Price</th>
+                    <th class="text-center" scope="col">#</th>
+                </tr>
+            </thead>
+            <tbody>        
+                {% for list in page_obj %}
+                    <tr>
+                        <th scope="row">
+                            <div class="text-white">
+                                {% if list.store.image %}
+                                    <img src="{{ list.store.image.url }}" alt="logo" height="50">
+                                {% endif %}
+                                <p>{{list.date}}</p>
+                                <p class="">{{ list.time }}</p>
+                            </div>
+                        </th>
+                        <td>
+                            <div class="container">
+                                <div class="row justify-content-between">
+                                    <div class="col-md-5 mx-2 mb-3 py-3 px-2">
+                                        {% for product_w_price in products_w_price %}
+                                            {% if product_w_price.image %}
+                                                {% if product_w_price.list == list and product_w_price.is_preview == True %}
+                                                <img src="{{ product_w_price.product.image.url }}" alt="preview" class="img" height="50" >
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <h3 class="text-white">{{list.store.name}}</h3>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-white">
+                                <span>$ {{list.total}}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="primary-btn">
+                                <a class="btn btn-primary" href="{% url 'list_info' list.id %}">Read More</a>
+                            </div>
+                            <a href="{% url 'delete_list' list.id %}" class="btn btn-danger mt-2">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- <div class="primary-btn text-center">
+            <a href="{% url 'create_test'%}" class="btn btn-primary">Create test</a>
+        </div>     -->
+    </div>
+
+<div class="container mt-3">
+
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                {% if page_obj.has_previous %}
+                    <a class="btn btn-outline-secondary" href="?page=1">&laquo; first</a>
+                    <a class="btn btn-outline-secondary" href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+            </div>
+            <!-- <span>
+              <p class="text-secondary">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+            </span> -->
+            <span>
+                {% if page_obj.has_next %}
+                    <a class="btn btn-outline-secondary" href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a class="btn btn-outline-secondary" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+</div>
+
+
+<br><br><br>
+
+<script>
+    document.getElementById('toggle-btn').addEventListener('click', function(){
+        document.getElementById('toggle').style.display = "block";
+        document.getElementById('toggle-btn').style.display = "none";
+        })
+</script>
+
+
+{% endblock content %}
+

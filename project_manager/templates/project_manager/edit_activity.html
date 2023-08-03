@@ -1,0 +1,20 @@
+<!-- https://www.bootdey.com/snippets/view/Event-Schedule-list#preview -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<a href="{% url 'process' project.id process.id %}"><button class="btn btn-secondary mx-5 mt-3">&#60; Back</button></a>
+
+<div class="container bg-white rounded my-3 py-2">
+    <form action="" method="POST" enctype="">
+        {% csrf_token %}
+        {{ activity_form.as_p }}
+        <input type="submit" class="btn btn-primary" name="create_project_btn">
+    </form>
+</div>
+
+
+{% endblock content %}
+

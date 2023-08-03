@@ -1,0 +1,60 @@
+<!-- https://www.bootdey.com/snippets/view/Event-Schedule-list#preview -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<a href="{% url 'lists' %}"><button class="btn btn-secondary mx-5 mt-3">&#60; Back</button></a>
+
+
+<div class="container mt-3">
+    <div class="col-md-12 bg-white rounded py-3 px-4">
+        <div class="container bg-light rounded border">
+            <h2 class="display-6"><b>Store: </b>{{ actual_list.store }} &emsp;&emsp;&emsp; <b>Total: </b>$ {{ actual_list.total }}</h2>
+            <h2 class="display-6"><b>Date: </b> {{ actual_list.date }}</h2>
+        </div>
+        <h4 class="display-6"><b>Actual total =</b>$ {{ summed_total }}</h4>
+    </div>  
+</div>
+
+
+
+
+<div class="container mt-2">
+    <div class="row justify-content-between">
+        <div class="col-md-5 mx-2 mb-2 bg-white rounded py-3 px-2">
+            <h4 class="display-5"><b>Add product</b></h4>
+            <div class="container bg-light rounded border py-2">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ product_w_price_form.as_p }}
+                    <input type="submit" class="btn btn-primary" name="product_w_price_form">
+                </form>
+            </div>   
+        </div>
+
+        <!-- Receipt image -->
+        <div class="col-md-5 mx-2 mb-2 rounded py-3 px-2 d-flex justify-content-center">
+            <img src="{{ actual_list.receipt_image.url }}" alt="receipt" height="400" class="border rounded">
+        </div>
+    
+        {% for product_w_price in products_w_price %}
+            <div class="col-md-5 mx-2 mb-3 bg-white rounded py-3 px-2">
+                {% if product_w_price.product.image %}
+                    <img src="{{ product_w_price.product.image.url }}" alt="product" class="img rounded" height="150">
+                {% endif %}
+                <div class="container bg-light rounded border mt-2 pb-2">
+                    <p><b>Product:</b> {{product_w_price.product.product_name_w_brand}}</p>
+                    <p><b>Amount: </b> {{product_w_price.amount}} {{product_w_price.unit.unit}}</p>
+                    <p><b>Price: $</b> {{product_w_price.price}}</p>
+                    <a href="#" class="btn btn-warning">Edit</a>
+                    <!-- Lo que está después de delete_product son los parametros que se le pasan a la view -->
+                    <a class="btn btn-danger" href="{% url 'delete_product_w_price' actual_list.id product_w_price.id %}">Delete</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}
+

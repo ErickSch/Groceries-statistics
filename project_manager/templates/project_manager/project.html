@@ -1,0 +1,70 @@
+<!-- https://www.bootdey.com/snippets/view/Event-Schedule-list#preview -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<a href="{% url 'manager' %}"><button class="btn text-secondary mx-5 mt-3">&#60; Back</button></a>
+
+
+<div class="container">
+    <div class="container rounded py-2 my-2" style="background-color: lightblue">
+        <div class="container d-flex justify-content-between my-1">
+            <h2 id="project_title" class="fw-bold ">{{project.title}}</h2> <span><button class="btn btn-light border mx-2" onclick="onclickCreate('create_process_btn', 'create_process_form')" id="create_process_btn">+ Add process</button><button class="btn btn-warning mx-2" onclick="onclickCreate('', 'edit_project_div')" id="edit_project_btn">Edit title</button><a href="{% url 'delete_project' primary_key_project %}" class="btn btn-danger"> Delete project</a></span>
+            
+        </div>
+        <div id="edit_project_div" style="display:none">
+            <form action="" method="POST" enctype="">
+                {% csrf_token %}
+                {{ project_form.as_p }}
+                <input type="submit" class="btn btn-primary" name="edit_project_form">
+            </form>
+
+        </div>
+        <div class="container bg-white rounded my-3 py-2" id="create_process_form" style="display:none">
+            <form action="" method="POST" enctype="">
+                {% csrf_token %}
+                {{ process_form.as_p }}
+                <input type="submit" class="btn btn-primary" name="create_process_btn">
+            </form>
+        </div>
+        {% for process in processes %}
+            {% if process.project == project %}
+            <div class="container bg-light rounded py-2 my-2">
+                <div class="container my-2 d-flex justify-content-between">
+                    <h4>{{ process.title }}</h4><span><a class="btn btn-info mx-2" href="{% url 'process' project.id process.id %}">Edit process</a><a href="{% url 'delete_process' project.id process.id %}" class="btn btn-danger"> Delete process</a></span>
+                </div>
+                <div class="container">
+                    <ul>
+                        {% for activity in activities %}
+                            {% if activity.process == process%}
+                                <li>
+                                    <p>{{activity.description}}</p>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+
+                    </ul> 
+                </div>
+            </div>
+
+            {% endif %}
+        {% endfor %}
+
+    
+</div>
+
+
+<script>
+
+
+    function onclickCreate(btn_id, form_id){
+        document.getElementById(form_id).style.display = "block";
+        document.getElementById(btn_id).style.display = "none";
+    }
+
+
+</script>
+{% endblock content %}
+

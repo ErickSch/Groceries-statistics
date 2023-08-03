@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<div class="container rounded bg-light mt-3 py-2">
+    <h4>Hi {{ user.username }}!</h4>
+    <b><p>Welcome to the SuperApp</p></b>
+    <p>Where you'll be able to have a register of
+        the products you buy at the supermarket, see
+        how much you're spending and see some graphs about it.
+    </p>
+</div>
+{% else %}
+<div class="container rounded bg-light mt-3 py-2">
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">Log In</a>
+</div>
+{% endif %}
+
+{% endblock content %}
+

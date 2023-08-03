@@ -1,0 +1,258 @@
+<!-- https://www.bootdey.com/snippets/view/Event-Schedule-list#preview -->
+
+<!-- Usar informacion de la base de datos con javascript -->
+<!-- https://stackoverflow.com/questions/10358803/is-it-possible-to-use-javascript-to-get-data-from-django-models-db -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<a href="{% url 'products' %}"><button class="btn btn-secondary mx-5 mt-3">&#60; Back</button></a>
+
+  <div class="container text-white mt-4">
+    <h4>{{product.product_name}} price graph</h4>
+  </div>
+  <div id="graph" class="container bg-white mt-2 rounded">
+      <canvas id="myChart" width="400" height="100"></canvas>
+  </div>
+
+  <div class="container mt-3">
+    <h3 class="text-white">Product statistics</h3>
+
+    <div class="container d-flex bg-light rounded my-3 py-2 justify-content-start">
+      <div class="container">
+        <form action="#">
+          <p class="fw-bold">Select filter: </p>
+          <input type="radio" id="same_brand" value="same_brand" name="filter" checked> Same brand <br>
+          <input  type="radio" id="same_name" value="same_name" name="filter"> Different brands <br>
+            <br><input type="checkbox" id="unit_price_checkbox"> Unit price <br>
+        </form>
+        <br>
+        <div>
+          <p><b>Period of time:</b></p>
+          <form action="">
+            <label for="start_date">Start date:</label>
+            <input id="start_date" type="date" value="{{ start_date }}">
+            <label for="end_date"> &emsp;&emsp;End date:</label>
+            <input id="end_date" type="date" value="{{ end_date }}">
+          </form>
+        </div>
+      </div>
+      <div class="container d-flex justify-content-center align-items-center">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" class="" alt="{{product.product_name}}" height="150">
+        {% endif %}
+      </div>
+
+    </div>
+
+    <div class="container bg-light rounded p-2">
+      <p><span class="fw-bold">Amount bought: </span> {{ amount_bought }}</p>
+      <p><span class="fw-bold">Total spendings: $</span> {{ total_spendings }} <span class="fw-bold">MXN</span></p>
+      <p><span class="fw-bold">Unit price average: $</span> {{unit_price_average}} <span class="fw-bold">MXN</span></p>
+      <p><span class="fw-bold">Unit price change: </span> {{unit_price_change}} %</p>
+    </div>
+    <div class="container d-flex justify-content-around mt-3">
+      <div class="container bg-info rounded">
+        <h4>Amount bought:</h4>
+        <p class="display-6">{{amount_bought}}</p>
+      </div>
+      <div class="container bg-secondary rounded">
+        <h4>Total spendings: </h4>
+        <p class="display-6">Blah</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    var startDate = new Date(document.getElementById('start_date').value);
+    var endDate = new Date(document.getElementById('end_date').value);
+
+
+    radios = document.getElementsByName('filter');
+
+
+      var yValues = []
+      var xValues = []
+
+
+      var barColors = ["red", "green","blue","orange","brown"];
+
+      const data = {
+    labels: xValues,
+    datasets: [{
+      label: 'Precio {{product.product_name}}',
+      data: yValues,
+      backgroundColor: [
+        'rgba(255, 26, 104, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)',
+        'rgba(153, 102, 255, 0.2)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(0, 0, 0, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255, 26, 104, 1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)',
+        'rgba(153, 102, 255, 1)',
+        'rgba(255, 159, 64, 1)',
+        'rgba(0, 0, 0, 1)'
+      ],
+      borderWidth: 1
+    }],
+  };   
+  
+  
+  // config 
+  const config = {
+    type: 'line',
+    data,
+    options: {
+      scales: {
+      //   yAxes: [{
+      //     display: true,
+      //     ticks: {
+      //         min: 90,    // minimum will be 0, unless there is a lower value.
+      //         max: 105,  
+      //     }
+      // }],
+      }
+    }
+
+  };    
+
+
+  // render init block
+  const myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+  
+  updateChart()
+
+  // 
+
+  // Event listeners  
+  document.getElementById("same_brand").addEventListener("click", updateChart);
+  document.getElementById("same_name").addEventListener("click", updateChart);
+  document.getElementById("unit_price_checkbox").addEventListener("click", updateChart);
+  document.getElementById("start_date").addEventListener("change", updateChart);
+  document.getElementById("end_date").addEventListener("change", updateChart);
+  
+  
+  
+  function updateChart(){
+    
+    unit_price_checkbox = document.getElementById("unit_price_checkbox").checked;
+
+    
+    // for (var i = 0, length = radios.length; i < length; i++) {
+    //   if (radios[i].checked) {
+    //     // do whatever you want with the checked radio
+    //     if(radios[i].value == 'same_brand'){
+    //       if(unit_price_checkbox){
+    //         var yValues = [{% for product_instance in product_instances_same_brand %}'{{product_instance.unit_price}}',{%endfor%}];
+    //         var xValues = [{% for product_instance in product_instances_same_brand %}'{{product_instance.list.date}}',{%endfor%}];
+    //       }
+    //       else{
+    //         var yValues = [{% for product_instance in product_instances_same_brand %}'{{product_instance.price}}',{%endfor%}];
+    //         var xValues = [{% for product_instance in product_instances_same_brand %}'{{product_instance.list.date}}',{%endfor%}];
+    //       }
+    //     }
+
+    //     else if(radios[i].value == 'by_name'){
+    //       if(unit_price_checkbox){
+    //         var yValues = [{% for product_instance in product_instances %}'{{product_instance.unit_price}}',{%endfor%}];
+    //         var xValues = [{% for product_instance in product_instances %}'{{product_instance.product.brand}}',{%endfor%}];
+    //       }
+    //       else{
+    //         var yValues = [{% for product_instance in product_instances %}'{{product_instance.price}}',{%endfor%}];
+    //         var xValues = [{% for product_instance in product_instances %}'{{product_instance.product.brand}}',{%endfor%}];
+    //       }
+    //     }
+
+    //   }
+    // }
+    var startDate = new Date(document.getElementById('start_date').value);
+    var endDate = new Date(document.getElementById('end_date').value);          
+    xValues = [];
+    yValues = [];
+
+    var radio_same_brand = document.getElementById('same_brand');
+    var radio_same_name = document.getElementById('same_name');
+    var values_indexes = [];
+
+    if(radio_same_name.checked){
+      {% for product_instance in product_instances %}
+
+        var instance_date = new Date('{{product_instance.list.date}}')
+        if(instance_date <= endDate && instance_date >= startDate){
+          xValues.push('{{ product_instance.product.brand }}')
+          // values_indexes.push('{{ product_instance.id }}')
+          if(unit_price_checkbox){
+            yValues.push('{{ product_instance.unit_price }}')
+          }
+          else{
+            yValues.push('{{ product_instance.price }}')
+          }
+        }   
+
+      {% endfor %}
+    }
+    else if(radio_same_brand.checked){
+      {% for product_instance in product_instances_same_brand %}
+
+        var instance_date = new Date('{{product_instance.list.date}}')
+        if(instance_date <= endDate && instance_date >= startDate){
+          xValues.push('{{ product_instance.list.date }}')
+          if(unit_price_checkbox){
+            yValues.push('{{ product_instance.unit_price }}')
+          }
+          else{
+            yValues.push('{{ product_instance.price }}')
+          }
+        }
+
+      {% endfor %}
+    }
+    
+
+    
+    myChart.data.datasets[0].data = yValues
+    myChart.data.labels = xValues;
+    
+    // myChart.config.options.scales.xAxes[0].ticks.min = startDateTime;
+    // myChart.config.options.scales.xAxes[0].ticks.max = endDateTime;
+
+
+    myChart.update();
+
+  }
+
+  // function updateDiv(){ 
+  //   $( "#graph" ).load(location.href + " #graph" );
+  // }
+
+
+
+
+
+
+
+
+
+
+
+  </script>
+
+  <!-- <script
+  src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+  </script> -->
+  
+{% endblock content %}
+

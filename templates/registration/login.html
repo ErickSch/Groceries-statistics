@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container rounded bg-light mt-3 py-2">
+    <h2>Log In</h2>
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-outline-secondary">Log In</button>
+    </form>
+    <p class="text-muted">User: erick</p>
+    <p class="text-muted">Password: Asdf</p>
+
+</div>
+
+{% endblock content %}

@@ -1,0 +1,33 @@
+<!-- https://www.bootdey.com/snippets/view/Event-Schedule-list#preview -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <a href="{% url 'products' %}"><button class="btn btn-secondary mx-5 mt-3">&#60; Back</button></a>
+
+    
+    <div class="container mt-3">
+        <h3 class="text-white">Products</h3>
+        <ul class="list-group list-group-light">
+            {% for product in page_obj %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  {% if product.product.image %}
+                    <img src="{{ product.image.url }}" alt="logo" class="img" height="50">
+                  {% endif %}
+                  <div class="fw-bold">{{ product.product_name }}</div>
+                  <div class="text-muted">Test</div>
+                </div>
+                <span class="badge rounded">
+                  <a href="{% url 'edit_product' product.id %}" class="btn btn-warning">Edit</a>
+                  <a href="{% url 'delete_product' product.id %}" class="btn btn-danger">Delete</a>
+                </span>
+              </li>
+            {% endfor %}
+          </ul>
+    </div>
+{% endblock content %}
+
+
+

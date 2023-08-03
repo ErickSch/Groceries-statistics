@@ -1,0 +1,63 @@
+<!-- https://www.bootdey.com/snippets/view/Event-Schedule-list#preview -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex mx-2">
+        <a href="{% url 'manager' %}" class="btn text-secondary mt-3">&#60;&#60;</a>
+        <a href="{% url 'project' project.id %}" class="btn text-secondary mt-3">&#60;Back</a>
+</div>
+
+
+<div class="container">
+    <div class="container rounded py-2 my-2" style="background-color: rgb(233, 160, 151)">
+        <div class="container d-flex justify-content-between my-1">
+            <h2 class="fw-bold ">{{process.title}}</h2> <span><button class="btn btn-light border mx-2" onclick="onclickCreate('create_activity_btn', 'create_activity_form')" id="create_activity_btn">+ Add activity</button><button class="btn btn-warning mx-2" onclick="onclickCreate('', 'edit_process_div')" id="edit_process_btn">Edit title</button><a href="{% url 'delete_process' project.id process.id %}" class="btn btn-danger"> Delete process</a></span>
+        </div>
+        <div id="edit_process_div" style="display:none">
+            <form action="" method="POST" enctype="">
+                {% csrf_token %}
+                {{ process_form.as_p }}
+                <input type="submit" class="btn btn-primary" name="edit_process_form">
+            </form>
+        </div>
+        <div class="container bg-white rounded my-3 py-2" id="create_activity_form" style="display:none">
+            <form action="" method="POST" enctype="">
+                {% csrf_token %}
+                {{ activity_form.as_p }}
+                <input type="submit" class="btn btn-primary" name="create_activity_form">
+            </form>
+        </div>
+
+        
+        <div class="container">
+            <ul>
+                {% for activity in activities %}
+                <li>
+                    <div class="container d-flex bg-light rounded my-2 border justify-content-between">
+                        <p class="">{{activity.description}}</p> <span><a href="{% url 'edit_activity' project.id process.id activity.id %}" class="btn btn-info mx-2 my-2" >Edit activity</a><a href="{% url 'delete_activity' project.id process.id activity.id %}" class="btn btn-danger"> Delete activity</a></span>
+                    </div>
+                </li>
+                    {% endfor %}
+                    
+            </ul>
+            
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+
+
+    function onclickCreate(btn_id, form_id){
+        document.getElementById(form_id).style.display = "block";
+        document.getElementById(btn_id).style.display = "none";
+    }
+
+
+</script>
+{% endblock content %}
+

@@ -1,0 +1,53 @@
+<!-- https://www.bootdey.com/snippets/view/Event-Schedule-list#preview -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <a href="{% url 'products' %}"><button class="btn btn-secondary mx-5 mt-3">&#60; Back</button></a>
+
+    
+    <div class="container mt-3">
+        <h3 class="text-white">Stores</h3>
+        <ul class="list-group list-group-light">
+            {% for store in page_obj %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  {% if store.image %}
+                    <img src="{{ store.image.url }}" alt="logo" class="img" height="50">
+                  {% endif %}
+                  <div class="fw-bold">{{ store.name }}</div>
+                  <div class="text-muted">{{ store.location }}</div>
+                </div>
+                <span class="badge rounded">
+                  <a href="{% url 'edit_store' store.id %}" class="btn btn-warning">Edit</a>
+                  <a href="{% url 'delete_store' store.id %}" class="btn btn-danger">Delete</a>
+                </span>
+              </li>
+            {% endfor %}
+          </ul>
+    </div>
+    
+  <div class="container mt-3">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            {% if page_obj.has_previous %}
+                <a class="btn btn-outline-secondary" href="?page=1">&laquo; first</a>
+                <a class="btn btn-outline-secondary" href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+        </div>
+        <!-- <span>
+          <p class="text-secondary">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+        </span> -->
+        <span>
+            {% if page_obj.has_next %}
+                <a class="btn btn-outline-secondary" href="?page={{ page_obj.next_page_number }}">next</a>
+                <a class="btn btn-outline-secondary" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+  </div>
+{% endblock content %}
+
+
+
